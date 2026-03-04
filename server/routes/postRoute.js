@@ -1,6 +1,7 @@
 const router = require('express').Router();
 const db = require('../models');
 const validate = require('validate.js');
+const postService = require('../services/postService');
 
 const constraints = {
     title: {
@@ -14,9 +15,9 @@ const constraints = {
 }
 
 router.get('/', (req, res) => {
-    db .Post.findAll().then((result) => {
-        res.send(result);
-    })
+   postService.getAll().then((result) => {
+        res.status(result.status).json(result.data);
+    });
 });
 
 router.post('/', (req, res) => {
