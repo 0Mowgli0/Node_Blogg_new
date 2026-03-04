@@ -43,7 +43,7 @@ router.put('/', (req, res) => {
           .update(post, {
             where: {id: post.id } })
              .then((result) => {
-            res.send(result);
+            res.send('inlägget har uppdaterats');
         });
     }
           

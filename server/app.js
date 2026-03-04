@@ -9,5 +9,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use('/posts', require('./routes/postRoute'));
+app.use('/users', require('./routes/usersRoute'));
+app.use('/tags', require('./routes/tagsRoute'));
 module.exports = app;
 
