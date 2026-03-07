@@ -1,18 +1,8 @@
 const router = require('express').Router();
 const db = require('../models');
-const validate = require('validate.js');
+
 const postService = require('../services/postService');
 
-const constraints = {
-    title: {
-    length: {
-        minimum: 2,
-        maximum: 100,
-        tooShort: "^Titeln måste vara minst %{count} tecken lång",
-        tooLong: "^Titeln får inte vara längre än %{count} tecken lång"
-    }
-    }
-}
 
 router.get('/', (req, res) => {
    postService.getAll().then((result) => {
@@ -22,14 +12,10 @@ router.get('/', (req, res) => {
 
 router.post('/', (req, res) => {
     const post = req.body;
-    const invalidData = validate(post, constraints);
-    if(invalidData) {
-        res.status(400).json(invalidData);
-    } else {
-                db.Post.create(post).then((result) => {
-                res.send(result);
+    postService.create(post).then((result) => {
+        res.status(result.status).json(result.data);
     });
-    }
+   
 });
 
 router.put('/', (req, res) => {
