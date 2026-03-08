@@ -19,32 +19,20 @@ router.post('/', (req, res) => {
 });
 
 router.put('/', (req, res) => {
-     const post = req.body;
-    const invalidData = validate(post, constraints);
+    const post = req.body;
     const id = post.id;
-    if(invalidData||!id) {
-        res.status(400).json(invalidData||`Id är obligatoriskt`);
-    } 
-    else {
-          db.Post
-          .update(post, {
-            where: {id: post.id } })
-             .then((result) => {
-            res.send('inlägget har uppdaterats');
-        });
-    }
-          
-    });
+   
+    postService.update(post, id).then((result) => {
+    res.status(result.status).json(result.data);
+    });       
+});
 
 
 router.delete('/', (req, res) => {
-    db.Post
-    .destroy({
-    where: {id: req.body.id }  
-    })
-    .then(() => {
-        res.json(`inlägget raderades`);
-        });
-    });
+    const id = req.body.id;
+    postService.destroy(id).then((result) => {
+    res.status(result.status).json(result.data);
+    }); 
+});
 
 module.exports = router;

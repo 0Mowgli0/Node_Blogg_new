@@ -44,12 +44,41 @@ if(invalidData) {
     }
 }
 
-function update() {
+async function update(post, id) {
+    const invalidData = validate(post, constraints);
+    if (!id) {
+        return createResponseError(422, `Id är obligatoriskt`);
+    }
 
-}
+ if(invalidData) {
+        return createResponseError(422, invalidData);
+    } 
+    try {
+        await db.Post.update(post, {
+            where: {id}     
+        });
+        return createResponseMessage(200, `Inlägget uppdaterades`);
+        } catch (error) {
+            return createResponseError(error.status, error.message);
+        }
 
-function destroy() {
+          
+    }
 
+
+async function destroy(id) {
+ if (!id) {
+    return createResponseError(422, `Id är obligatoriskt`);
+    }
+    try {   await db.Post
+    .destroy({
+    where: {id }  
+    });
+      return createResponseMessage(200, `Inlägget raderades`);
+    } catch (error) {
+        return createResponseError(error.status, error.message);
+    }
+    
 }
 
 module.exports = {
