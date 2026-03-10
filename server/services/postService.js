@@ -5,6 +5,7 @@ const {
 createResponseMessage }
 = require('../helpers/responseHelper');
 const validate = require('validate.js');
+const { post } = require('../app');
 
 
 const constraints = {
@@ -21,7 +22,7 @@ const constraints = {
 
 async function getById(id) {
     try {
-        const allPosts = await db.Post.findOne({
+        const post = await db.Post.findOne({
     where: { id },
     include: [
     db.user,
@@ -32,7 +33,7 @@ async function getById(id) {
     }
 ]
 });
-      return createResponseSuccess(allPosts);
+      return createResponseSuccess(_formatPost(post));
     } catch (error) {
         return createResponseError(error.status, error.message);
     }
@@ -44,7 +45,7 @@ async function getAll() {
       const allPosts = await db.Post.findAll({
     include: [db.user, db.Tag]
 });
-        return createResponseSuccess(allPosts);
+        return createResponseSuccess(allPosts.map(post => _formatPost(post)));
     } catch (error) {
         return createResponseError(error.status, error.message);
     }
@@ -65,10 +66,8 @@ async function addComment(id, comment) {
     }
 
 
- 
 
-
-    async function create(post) {
+async function create(post) {
     const invalidData = validate(post, constraints);
     if(invalidData) {
     return createResponseError(422, invalidData);
@@ -106,9 +105,6 @@ async function update(post, id) {
          
     }
 
-
-
-
 async function destroy(id) {
  if (!id) {
     return createResponseError(422, `Id är obligatoriskt`);
@@ -124,6 +120,51 @@ async function destroy(id) {
    
 }
 
+function _formatPost(post) {
+    const cleanPost = {
+        id: post.id,
+        title: post.title,
+        body: post.body,
+        imageUrl: post.imageUrl,
+        createdAt: post.createdAt,
+        updatedAt: post.updatedAt,
+        author: {
+            id: post.user.id,
+            username: post.user.username,
+            email: post.user.email,
+            firstName: post.user.firstName,
+            lastName: post.user.lastName,
+            imageUrl: post.user.imageUrl
+        },
+        tags: []
+    };
+
+    if (post.comments) {
+        cleanPost.comments = [];
+
+        post.comments.map((comment) => {
+            return cleanPost.comments = [
+                {
+                    title: comment.title,
+                    body: comment.body,
+                    author: comment.user.username,
+                    createdAt: comment.createdAt
+                }, 
+                ...cleanPost.comments
+            ];
+        });
+    }
+
+    post.Tags.map((tag) => {
+        return (cleanPost.tags = [tag.name, ...cleanPost.tags]);
+    });
+
+    return cleanPost;
+}
+
+            
+
+            
 
 module.exports = {
     getById,
