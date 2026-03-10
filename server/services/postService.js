@@ -1,11 +1,11 @@
 const db = require('../models/');
-const { 
+const {
     createResponseSuccess,
     createResponseError,
-    createResponseMessage } 
-    = require('../helpers/responseHelper');
-
+createResponseMessage }
+= require('../helpers/responseHelper');
 const validate = require('validate.js');
+
 
 const constraints = {
     title: {
@@ -18,31 +18,70 @@ const constraints = {
     }
 };
 
-async function getAll() {
+
+async function getById(id) {
     try {
-    const allPosts = await db.Post.findAll();
-    return createResponseSuccess(allPosts);
+        const allPosts = await db.Post.findOne({
+    where: { id },
+    include: [
+    db.user,
+    db.Tag,
+    {
+        model: db.comment,
+        include: [db.user]
+    }
+]
+});
+      return createResponseSuccess(allPosts);
     } catch (error) {
         return createResponseError(error.status, error.message);
-        }
     }
+}
 
 
-async function create(post) {
-    const invalidData = validate(post, constraints);
-if(invalidData) {
-    return createResponseError(422, invalidData);
-} else {
+async function getAll() {
     try {
-       const newPost = await db.Post.create(post);
-         return createResponseSuccess(newPost);
+      const allPosts = await db.Post.findAll({
+    include: [db.user, db.Tag]
+});
+        return createResponseSuccess(allPosts);
+    } catch (error) {
+        return createResponseError(error.status, error.message);
+    }
+}
+
+
+async function addComment(id, comment) {
+        if(!id) {
+    return createResponseError(422, `Id är obligatoriskt`);
+    }
+    try {
+        comment.postId = id;
+        const newComment = await db.comment.create(comment);
+         return createResponseSuccess(newComment);
     }catch (error) {
         return createResponseError(error.status, error.message);
         }
-
-     
     }
-}
+
+
+ 
+
+
+    async function create(post) {
+    const invalidData = validate(post, constraints);
+    if(invalidData) {
+    return createResponseError(422, invalidData);
+    }
+    try {
+       const newPost = await db.Post.create(post);
+         return createResponseSuccess(newPost);
+    }
+    catch (error) {
+    return createResponseError(error.status, error.message);
+    }
+    }
+
 
 async function update(post, id) {
     const invalidData = validate(post, constraints);
@@ -50,20 +89,24 @@ async function update(post, id) {
         return createResponseError(422, `Id är obligatoriskt`);
     }
 
+
  if(invalidData) {
         return createResponseError(422, invalidData);
-    } 
+    }
     try {
         await db.Post.update(post, {
-            where: {id}     
+            where: {id}    
         });
         return createResponseMessage(200, `Inlägget uppdaterades`);
         } catch (error) {
             return createResponseError(error.status, error.message);
         }
 
-          
+
+         
     }
+
+
 
 
 async function destroy(id) {
@@ -78,12 +121,15 @@ async function destroy(id) {
     } catch (error) {
         return createResponseError(error.status, error.message);
     }
-    
+   
 }
 
+
 module.exports = {
+    getById,
     getAll,
     create,
     update,
-    destroy
+    destroy,
+    addComment
 }
