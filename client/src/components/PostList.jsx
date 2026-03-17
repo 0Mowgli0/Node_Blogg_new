@@ -1,4 +1,5 @@
 import PostItemSmall from "./PostItemSmall";
+import {getAll} from "../services/PostService";
 
 function PostList() {
 const posts = [
@@ -43,6 +44,8 @@ const posts = [
         ]
     }
 ]
+
+getAll().then((posts) => (console.log(posts)));
 
    return (
   <ul>

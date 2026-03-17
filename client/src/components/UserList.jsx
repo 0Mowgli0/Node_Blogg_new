@@ -30,7 +30,7 @@ const users = [
     <ul>
         {users ?. length > 0 ? (
          users.map(user => (
-         <li key={'users_${user.id}'}>
+         <li key={`user_${user.id}`}>
             <UserItemSmall user={user} />
          </li>
          ))
