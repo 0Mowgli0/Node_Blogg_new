@@ -1,51 +1,17 @@
 import PostItemSmall from "./PostItemSmall";
 import {getAll} from "../services/PostService";
+import {useState} from 'react'
+import { useEffect } from "react";
 
-function PostList() {
-const posts = [
-    {
-        "id": 1,
-        "title": "test för taggar uppdateras",
-        "body": "innehåll i inlägget",
-        "createdAt": "2026-03-10T10:11:49.000Z",
-        "updatedAt": "2026-03-11T10:36:04.000Z",
-        "author": {
-            "id": 1,
-            "username": "sam",
-            "email": "sa@du.se",
-            "firstName": null,
-            "lastName": null,
-            "imageUrl": null
-        },
-        "tags": [
-            "tagg2",
-            "tagg3"
-        ]
-    },
-    {
-        "id": 10,
-        "title": "test för taggar uppdateras",
-        "body": "innehåll i inlägget",
-        "createdAt": "2026-03-11T10:25:47.000Z",
-        "updatedAt": "2026-03-11T10:55:13.000Z",
-        "author": {
-            "id": 2,
-            "username": "Olle",
-            "email": "olle.osten@du.se",
-            "firstName": null,
-            "lastName": null,
-            "imageUrl": null
-        },
-        "tags": [
-            "tagg2",
-            "entagg",
-            "tagg3",
-            "tagg1"
-        ]
-    }
-]
+function PostList({pathname}) {
 
-getAll().then((posts) => (console.log(posts)));
+const [posts, setPosts] = useState([])
+
+useEffect(() => {
+  getAll(pathname).then(posts => {
+    setPosts(posts)
+  });
+}, [pathname]);
 
    return (
   <ul>
