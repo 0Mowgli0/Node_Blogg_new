@@ -1,32 +1,17 @@
+
+import {useEffect, useState} from 'react'; 
 import Tag from "./Tag";
+import {getAll} from '../services/TagService';
+
 function TagList() {
 
- const tags = [
-    {
-        "id": 1,
-        "name": "tagg2",
-        "createdAt": "2026-03-11T10:25:48.000Z",
-        "updatedAt": "2026-03-11T10:25:48.000Z"
-    },
-    {
-        "id": 2,
-        "name": "entagg",
-        "createdAt": "2026-03-11T10:25:48.000Z",
-        "updatedAt": "2026-03-11T10:25:48.000Z"
-    },
-    {
-        "id": 3,
-        "name": "tagg3",
-        "createdAt": "2026-03-11T10:25:48.000Z",
-        "updatedAt": "2026-03-11T10:25:48.000Z"
-    },
-    {
-        "id": 4,
-        "name": "tagg1",
-        "createdAt": "2026-03-11T10:55:13.000Z",
-        "updatedAt": "2026-03-11T10:55:13.000Z"
-    }
-];
+    const [tags, setTags] = useState ([]); 
+
+    useEffect(() => {
+        getAll().then((tags) => setTags(tags)); 
+
+    }, []);
+
     return (   
     <ul>
         {tags ?. length > 0 ? (

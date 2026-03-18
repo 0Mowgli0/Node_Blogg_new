@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 
 function Tag({ text }) {
     return (
-    <Link to={`/tags/${text}`}>
+    <Link to={`/tags/${text}/posts`}>
         <Chip label ={text}></Chip>
     </Link> 
     );
