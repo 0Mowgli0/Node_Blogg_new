@@ -19,9 +19,9 @@ const constraints = {
     }
 };
 
-async function getByTag(tagName) {
+async function getByTag(tagId) {
     try {
-    const tag = await db.Tag.findOne({where: {name: tagName}});
+    const tag = await db.Tag.findOne({where: {id: tagId}});
     const allPosts = await tag.getPosts({include: [db.user, db.Tag]});
     return createResponseSuccess(allPosts.map(post => _formatPost(post)));
     } catch (error) {
