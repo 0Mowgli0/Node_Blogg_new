@@ -2,40 +2,22 @@ import PostItemLarge from "../components/PostItemLarge";
 import CommentForm from "../components/CommentForm";
 import Comment from "../components/Comment";
 import {Button} from '@mui/material';
-import {useNavigate} from 'react-router-dom';
+import {useNavigate, useParams} from 'react-router-dom';
+import {useEffect,useState} from 'react';
+import {getOne} from '../services/PostService';
 
 
 function PostDetail() {
-    const post = {
-    "id": 1,
-    "title": "test för taggar uppdateras",
-    "body": "innehåll i inlägget",
-    "createdAt": "2026-03-10T10:11:49.000Z",
-    "updatedAt": "2026-03-11T10:36:04.000Z",
-    "author": {
-        "id": 1,
-        "username": "sam",
-        "email": "sa@du.se",
-        "firstName": null,
-        "lastName": null,
-        "imageUrl": null
-    },
-    "tags": [
-        "tagg3",
-        "tagg2"
-    ],
-    "comments": [
-        {
-            "title": "Kommentar",
-            "body": "jag tycker att inlägget var bra",
-            "author": "sam",
-            "createdAt": "2026-03-10T10:34:23.000Z"
-        }
-    ]
-}
+    const {id} = useParams();
+    
+    const [post, setPost] = useState(null);
+
+    useEffect(() => {
+        getOne(id).then((post) => setPost(post));
+    }, [id]);
 
 const navigate = useNavigate();
-    return(
+    return post ?(
     <div>
     <PostItemLarge post={post} />
     <Button onClick={() => navigate(-1)}>Tillbacka</Button>
@@ -46,6 +28,8 @@ const navigate = useNavigate();
      <Comment key={'comment_${i}'} comment={comment} />
     ))}
     </div>
+    ) : (
+    <h3>kunde inte hämta inlägg</h3>
     ); 
 }
 
