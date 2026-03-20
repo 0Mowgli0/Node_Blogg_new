@@ -7,6 +7,7 @@ import Posts from "./views/Posts.jsx";
 import PostDetail from "./views/PostDetail.jsx";
 import Home from "./views/Home.jsx";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { CssBaseline } from "@mui/material";
 
 const router = createBrowserRouter([
   {
@@ -25,6 +26,7 @@ const router = createBrowserRouter([
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
+    <CssBaseline /> 
     <RouterProvider router={router} />
   </StrictMode>,
 );
